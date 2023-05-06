@@ -1,5 +1,4 @@
 ﻿using System;
-// Window/XAML stuff
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-// API interation
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -27,34 +25,62 @@ namespace MTGDB_Test
     /// </summary>
     public partial class MainWindow : Window
     {
-        private APIClient client;
-        private Boolean firstSearch;
+        private APIClient _client;
+        private Boolean _firstSearch;
+        private readonly string _endpoint = "https://api.scryfall.com/";
         public MainWindow()
         {
             InitializeComponent();
-            client = new APIClient("https://api.scryfall.com/");
-            firstSearch = true;
+            _client = new APIClient(_endpoint);
+            _firstSearch = true;
         }
         /// <summary>
         /// Calls client to peform search
         /// </summary>
         private void performSearch()
         {
-            // Get card info
-            string name = SearchText.Text;
-            Card card = new Card();
-            card = client.SearchCard(name);
+            try
+            {
+                // Get card info
+                string name = SearchText.Text;
+                Card card = new Card();
+                card = _client.SearchCard(name);
 
-            // Update window
-            CardInfo.Text = card.name;
+                // Update window
+                CardInfo.Text = card.Name;
 
-            // Update image
-            BitmapImage myBitmapImage = new BitmapImage();
-            myBitmapImage.BeginInit();
-            myBitmapImage.UriSource = new Uri(card.imgSource);
-            myBitmapImage.DecodePixelWidth = 146;
-            myBitmapImage.EndInit();
-            ImageBox.Source = myBitmapImage;
+                // Update images
+                ImageBox1.Source = SetImage(card.ImgSource1);
+                ImageBox2.Source = SetImage(card.ImgSource2);
+
+                Console.WriteLine(ImageBox1.Source);
+                Console.WriteLine(ImageBox2.Source);
+            }
+            catch (FailedSearchException e)
+            {
+                // Display why search failed
+                CardInfo.Text = e.Message;
+                // Reset images
+                ImageBox1.Source = null;
+                ImageBox2.Source = null;
+            }
+        }
+        private BitmapImage SetImage(string uri)
+        {
+            if (uri != null)
+            {
+                BitmapImage myBitmapImage = new BitmapImage();
+                myBitmapImage.BeginInit();
+                myBitmapImage.UriSource = new Uri(uri);
+                myBitmapImage.DecodePixelWidth = 146;
+                myBitmapImage.EndInit();
+                return myBitmapImage;
+            }
+            else
+            {
+                Console.WriteLine("UhOh");
+                return null;
+            }
         }
         /// <summary>
         /// Handles 'Get Card' button cick
@@ -71,34 +97,42 @@ namespace MTGDB_Test
             if (e.Key == Key.Return)
             {
                 performSearch();
-            }   
+            }
         }
         /// <summary>
         /// Handles clicking on 
         /// </summary>
         private void GetSearchClick(object sender, MouseButtonEventArgs e)
         {
-            if (firstSearch)
+            if (_firstSearch)
             {
                 SearchText.Text = "";
-                firstSearch = false;
+                _firstSearch = false;
             }
         }
     }
+    public class FailedSearchException : Exception
+    {
+        public FailedSearchException() { }
+        public FailedSearchException(string message) : base(message) { }
+        public FailedSearchException(string message, Exception inner) : base(message, inner) { }
+    }
     public class Card
     {
-        public string name { get; set; }
-        public string imgSource { get; set; }
+        public string Name { get; set; }
+        public string ImgSource1 { get; set; }
+        public string ImgSource2 { get; set; }
         public Card()
         {
-            name = null;
-            imgSource = null;
+            Name = null;
+            ImgSource1 = null;
+            ImgSource2 = null;
         }
     }
     public class APIClient
     {
-        protected readonly string endpoint;
-        public APIClient(string endpoint) { this.endpoint = endpoint; }
+        private readonly string _endpoint;
+        public APIClient(string endpoint) { _endpoint = endpoint; }
         
         /// <summary>
         /// Perform search query for singular card
@@ -107,12 +141,30 @@ namespace MTGDB_Test
         {
             string parameters = "cards/named?fuzzy=" + name;
             JObject result = GetQuery(parameters);
-            Card card = new Card
+
+            //Console.WriteLine(result.ToString());
+
+            if ((string)result["object"] == "card")
             {
-                name = (string)result["name"],
-                imgSource = (string)result["image_uris"]["small"]
-            };
-            return card;
+                Card card = new Card();
+                card.Name = (string)result["name"];
+                // Check if card is double-sided
+                if (result.ContainsKey("card_faces"))
+                {
+                    card.ImgSource1 = (string)result["card_faces"][0]["image_uris"]["small"];
+                    card.ImgSource2 = (string)result["card_faces"][1]["image_uris"]["small"];
+                }
+                else
+                {
+                    card.ImgSource1 = (string)result["image_uris"]["small"];
+                }
+
+                return card;
+            }
+            else
+            {
+                throw new FailedSearchException((string)result["details"]);
+            }
         }
         /// <summary>
         /// Perform query on API
@@ -121,7 +173,7 @@ namespace MTGDB_Test
         {
             using (var httpClient = new HttpClient())
             {
-                var query = endpoint + parameters;
+                var query = _endpoint + parameters;
 
                 var response = httpClient.GetAsync(query).Result;
 
