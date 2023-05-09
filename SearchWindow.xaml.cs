@@ -25,9 +25,12 @@ namespace MTGDB_Test
     /// </summary>
     public partial class MainWindow : Window
     {
-        private APIClient _client;
-        private Boolean _firstSearch;
+        private readonly APIClient _client;
+        private bool _firstSearch;
         private readonly string _endpoint = "https://api.scryfall.com/";
+        // Layer ordering for image boxes
+        private int _topImgOrder = 1;
+        private int _botImgOrder = 0;
         public MainWindow()
         {
             InitializeComponent();
@@ -58,9 +61,9 @@ namespace MTGDB_Test
             }
             catch (FailedSearchException e)
             {
-                // Display why search failed
+                // Display error message
                 CardInfo.Text = e.Message;
-                // Reset images
+                // Reset image boxes
                 ImageBox1.Source = null;
                 ImageBox2.Source = null;
             }
@@ -110,12 +113,28 @@ namespace MTGDB_Test
                 _firstSearch = false;
             }
         }
+
+        private void MouseEnterImg1(object sender, MouseEventArgs e)
+        {
+            SwapImgOrdering(ImageBox1, ImageBox2);
+        }
+
+        private void MouseEnterImg2(object sender, MouseEventArgs e)
+        {
+            SwapImgOrdering(ImageBox2, ImageBox1);
+        }
+
+        private void SwapImgOrdering(Image imgTop, Image imgBot)
+        {
+            Panel.SetZIndex(imgTop, _topImgOrder);
+            Panel.SetZIndex(imgBot, -_botImgOrder);
+        }
     }
     public class FailedSearchException : Exception
     {
-        public FailedSearchException() { }
+        //public FailedSearchException() { }
         public FailedSearchException(string message) : base(message) { }
-        public FailedSearchException(string message, Exception inner) : base(message, inner) { }
+        //public FailedSearchException(string message, Exception inner) : base(message, inner) { }
     }
     public class Card
     {

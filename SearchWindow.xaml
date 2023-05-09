@@ -19,7 +19,7 @@
         </TextBox>
         <TextBox x:Name="SearchText" HorizontalAlignment="Left" Height="22" Margin="37,171,0,0" TextWrapping="Wrap" Text="Enter card name..." VerticalAlignment="Top" Width="132" KeyDown="GetSearchEnter" PreviewMouseDown="GetSearchClick"/>
         <!-- Display card picture -->
-        <Image x:Name="ImageBox1" HorizontalAlignment="Left" Margin="244,132,0,0" VerticalAlignment="Top" Width="146" Height="204"/>
-        <Image x:Name="ImageBox2" HorizontalAlignment="Left" Margin="305,98,0,0" VerticalAlignment="Top" Width="146" Height="204"/>
+        <Image x:Name="ImageBox1" HorizontalAlignment="Left" Margin="244,132,0,0" VerticalAlignment="Top" Width="146" Height="204" Panel.ZIndex="1" MouseEnter="MouseEnterImg1"/>
+        <Image x:Name="ImageBox2" HorizontalAlignment="Left" Margin="305,98,0,0" VerticalAlignment="Top" Width="146" Height="204" MouseEnter="MouseEnterImg2"/>
     </Grid>
 </Window>
