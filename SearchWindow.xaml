@@ -12,14 +12,14 @@
             <ColumnDefinition Width="197*"/>
         </Grid.ColumnDefinitions-->
         <!-- Get card info -->
-        <Button x:Name="BGetCard" Content="Search" HorizontalAlignment="Left" Margin="37,198,0,0" VerticalAlignment="Top" Width="132" Height="40" Click="GetCardClick"/>
+        <Button x:Name="BGetCard" Content="Search" HorizontalAlignment="Left" Margin="141,336,0,0" VerticalAlignment="Top" Width="132" Height="40" Click="GetCardClick"/>
         <!-- Display card info -->
-        <TextBox x:Name="CardInfo" IsReadOnly="True" HorizontalAlignment="Left" Height="400" Margin="522,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="261" Background="#FFDDDDDD">
+        <TextBox x:Name="CardInfo" IsReadOnly="True" HorizontalAlignment="Left" Height="400" Margin="415,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="369" Background="#FFDDDDDD">
             Card info...
         </TextBox>
-        <TextBox x:Name="SearchText" HorizontalAlignment="Left" Height="22" Margin="37,171,0,0" TextWrapping="Wrap" Text="Enter card name..." VerticalAlignment="Top" Width="132" KeyDown="GetSearchEnter" PreviewMouseDown="GetSearchClick"/>
+        <TextBox x:Name="SearchText" HorizontalAlignment="Left" Height="22" Margin="141,309,0,0" TextWrapping="Wrap" Text="Enter card name..." VerticalAlignment="Top" Width="132" KeyDown="GetSearchEnter" PreviewMouseDown="GetSearchClick"/>
         <!-- Display card picture -->
-        <Image x:Name="ImageBox1" HorizontalAlignment="Left" Margin="244,132,0,0" VerticalAlignment="Top" Width="146" Height="204" Panel.ZIndex="1" MouseEnter="MouseEnterImg1"/>
-        <Image x:Name="ImageBox2" HorizontalAlignment="Left" Margin="305,98,0,0" VerticalAlignment="Top" Width="146" Height="204" MouseEnter="MouseEnterImg2"/>
+        <Image x:Name="ImageBox1" HorizontalAlignment="Left" Margin="101,75,0,0" VerticalAlignment="Top" Width="146" Height="204" Panel.ZIndex="1" MouseEnter="MouseEnterImg1"/>
+        <Image x:Name="ImageBox2" HorizontalAlignment="Left" Margin="162,41,0,0" VerticalAlignment="Top" Width="146" Height="204" MouseEnter="MouseEnterImg2"/>
     </Grid>
 </Window>
