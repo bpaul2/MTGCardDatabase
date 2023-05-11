@@ -21,9 +21,9 @@ using Newtonsoft.Json.Linq;
 namespace MTGDB_Test
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for SearchWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class SearchWindow : Window
     {
         private readonly APIClient _client;
         private bool _firstSearch;
@@ -33,7 +33,7 @@ namespace MTGDB_Test
         private int _topImgOrder = 1;
         private int _botImgOrder = 0;
 
-        public MainWindow()
+        public SearchWindow()
         {
             InitializeComponent();
             _client = new APIClient(_endpoint);
